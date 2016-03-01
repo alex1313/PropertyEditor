@@ -1,4 +1,4 @@
-﻿namespace PropertyEditor.Services
+﻿namespace PropertyEditor.Services.Implementations
 {
     using System.Collections.Generic;
     using System.Linq;

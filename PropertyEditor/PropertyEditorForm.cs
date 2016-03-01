@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows.Forms;
     using Services;
+    using Services.Implementations;
 
     public partial class PropertyEditorForm : Form
     {
@@ -25,34 +27,28 @@
 
         public object EditedObject { get; set; }
 
-        public void CreateControlsForEditObject(object objectToEdit)
+        private void CreateControlsForEditObject(object objectToEdit)
         {
             _intProperties = ObjectPropertiesService.GetObjectProperties<int>(objectToEdit);
             _stringProperties = ObjectPropertiesService.GetObjectProperties<string>(objectToEdit);
 
-            var i = 0;
-            var controls = new Control[_intProperties.Count + _stringProperties.Count];
+            var controls = new List<Control>();
 
             foreach (var property in _stringProperties)
             {
                 var label = new Label
                 {
                     Text = property.Key,
-                    Top = i > 0
-                        ? controls[i - 1].Bottom + 20
-                        : 0
+                    Top = (controls.LastOrDefault()?.Bottom ?? 0) + 20
                 };
-                Controls.Add(label);
+                controls.Add(label);
 
-                controls[i] = new TextBox
+                controls.Add(new TextBox
                 {
                     Name = property.Key,
                     Text = property.Value,
                     Top = label.Bottom
-                };
-                Controls.Add(controls[i]);
-
-                i++;
+                });
             }
 
             foreach (var property in _intProperties)
@@ -60,22 +56,21 @@
                 var label = new Label
                 {
                     Text = property.Key,
-                    Top = i > 0
-                        ? controls[i - 1].Bottom + 20
-                        : 0
+                    Top = (controls.LastOrDefault()?.Bottom ?? 0) + 20
                 };
-                Controls.Add(label);
+                controls.Add(label);
 
-                controls[i] = new NumericUpDown
+                controls.Add(new NumericUpDown
                 {
                     Name = property.Key,
                     Value = property.Value,
-                    Top = label.Bottom
-                };
-                Controls.Add(controls[i]);
-
-                i++;
+                    Top = label.Bottom,
+                    Minimum = decimal.MinValue,
+                    Maximum = decimal.MaxValue
+                });
             }
+
+            Controls.AddRange(controls.ToArray());
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
