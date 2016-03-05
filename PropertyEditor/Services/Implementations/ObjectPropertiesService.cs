@@ -2,24 +2,33 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using Models;
 
     public class ObjectPropertiesService : IObjectPropertiesService
     {
         public List<PropertyControlBase> GetObjectProperties(object obj)
         {
-            var intProperties = obj.GetType()
+            var properties = obj.GetType()
                 .GetProperties()
-                .Where(x => x.CanRead && x.CanWrite && x.PropertyType == typeof(int))
-                .Select(x => new IntegerPropertyControl(x.Name, x.GetValue(obj)))
-                .Cast<PropertyControlBase>();
+                .Where(x => x.CanRead && x.CanWrite);
 
-            var stringProperties = obj.GetType()
-                .GetProperties()
-                .Where(x => x.CanRead && x.CanWrite && x.PropertyType == typeof(string))
-                .Select(x => new StringPropertyControl(x.Name, x.GetValue(obj)));
+            return properties.Select<PropertyInfo, PropertyControlBase>(x =>
+            {
+                if (x.PropertyType == typeof (int))
+                {
+                    return new IntegerPropertyControl(x.Name, x.GetValue(obj));
+                }
 
-            return intProperties.Union(stringProperties).ToList();
+                if (x.PropertyType == typeof (string))
+                {
+                    return new StringPropertyControl(x.Name, x.GetValue(obj));
+                }
+
+                return null;
+            })
+                .Where(x => x != null)
+                .ToList();
         }
 
         public void SetPropertyValue(object obj, string propertyName, object propertyValue)

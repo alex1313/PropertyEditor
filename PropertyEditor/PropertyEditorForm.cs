@@ -46,7 +46,8 @@
             foreach (var property in _propertyControls)
             {
                 var value = Controls[property.Name].Text;
-                ObjectPropertiesService.SetPropertyValue(EditedObject, property.Name, Convert.ChangeType(value, property.Type));
+                ObjectPropertiesService.SetPropertyValue(EditedObject, property.Name,
+                    Convert.ChangeType(value, property.Type));
             }
 
             DialogResult = DialogResult.OK;

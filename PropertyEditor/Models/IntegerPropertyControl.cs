@@ -14,7 +14,7 @@ namespace PropertyEditor.Models
             return new NumericUpDown
             {
                 Name = Name,
-                Value = (int)Value,
+                Value = (int) Value,
                 Top = LabelPosition.Top,
                 Left = LabelPosition.Right,
                 Minimum = int.MinValue,
