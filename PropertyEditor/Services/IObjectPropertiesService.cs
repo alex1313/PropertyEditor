@@ -1,10 +1,11 @@
 ﻿namespace PropertyEditor.Services
 {
     using System.Collections.Generic;
+    using Models;
 
     public interface IObjectPropertiesService
     {
-        Dictionary<string, TResult> GetObjectProperties<TResult>(object obj);
+        List<PropertyControlBase> GetObjectProperties(object obj);
         void SetPropertyValue(object obj, string propertyName, object propertyValue);
     }
 }

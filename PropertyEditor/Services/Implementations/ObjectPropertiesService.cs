@@ -2,17 +2,24 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Models;
 
     public class ObjectPropertiesService : IObjectPropertiesService
     {
-        public Dictionary<string, TResult> GetObjectProperties<TResult>(object obj)
+        public List<PropertyControlBase> GetObjectProperties(object obj)
         {
-            var fieldValues = obj.GetType()
+            var intProperties = obj.GetType()
                 .GetProperties()
-                .Where(x => x.PropertyType == typeof(TResult) && x.CanRead && x.CanWrite)
-                .ToDictionary(x => x.Name, x => (TResult)x.GetValue(obj));
+                .Where(x => x.CanRead && x.CanWrite && x.PropertyType == typeof(int))
+                .Select(x => new IntegerPropertyControl(x.Name, x.GetValue(obj)))
+                .Cast<PropertyControlBase>();
 
-            return fieldValues;
+            var stringProperties = obj.GetType()
+                .GetProperties()
+                .Where(x => x.CanRead && x.CanWrite && x.PropertyType == typeof(string))
+                .Select(x => new StringPropertyControl(x.Name, x.GetValue(obj)));
+
+            return intProperties.Union(stringProperties).ToList();
         }
 
         public void SetPropertyValue(object obj, string propertyName, object propertyValue)

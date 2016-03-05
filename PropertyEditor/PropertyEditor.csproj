@@ -46,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\IntegerPropertyControl.cs" />
+    <Compile Include="Models\Position.cs" />
+    <Compile Include="Models\PropertyControlBase.cs" />
+    <Compile Include="Models\StringPropertyControl.cs" />
     <Compile Include="PropertyEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
